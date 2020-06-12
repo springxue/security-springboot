@@ -17,8 +17,8 @@ public class UserDao {
     public UserDto getUserByUserName(String username){
         String sql="select id,username,password,fullname,mobile from t_user where username= ?";
         List<UserDto> list=jdbcTemplate.query(sql,new Object[]{username},new BeanPropertyRowMapper<>(UserDto.class));
-//        List<Map> listMap=jdbcTemplate.query(sql,new Object[]{username},new BeanPropertyRowMapper<>(Map.class));
-//        System.out.println(listMap);
+        List<Map> listMap=jdbcTemplate.query(sql,new Object[]{username},new BeanPropertyRowMapper<>(Map.class));
+        System.out.println(listMap);
         if (list == null && list.size() <= 0) {
             return null;
         }
