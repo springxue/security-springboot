@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SpringDataUserDetailsService implements UserDetailsService {
     @Autowired
@@ -29,8 +31,11 @@ public class SpringDataUserDetailsService implements UserDetailsService {
         System.out.println(userDto);
         //暂时采用模拟方式
 //        UserDetails userDetails = User.withUsername("zhangsan").password("$2a$10$psjg7Sox1JLsrOZ5aF1qaeQJ7KrSaZ0/11J9XWfYwZyp2s.TeSKn2").authorities("p1").build();
-        UserDetails userDetails = User.withUsername(userDto.getUsername()).password(userDto.getPassword()).authorities("p1").build();
-
+        List<String> permissions = userDao.findPermissionsByUserId(userDto.getId());
+        //将permission转成数组
+        String[] permissionArray = new String[permissions.size()];
+        permissions.toArray(permissionArray);
+        UserDetails userDetails = User.withUsername(userDto.getUsername()).password(userDto.getPassword()).authorities(permissionArray).build();
         return userDetails;
     }
 }

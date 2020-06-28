@@ -1,5 +1,6 @@
 package com.casic.security.springboot.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,10 +15,12 @@ public class LoginController {
         return getUsername()+"登录成功";
     }
     @RequestMapping(value = "/r/r1",produces = {"text/plain;charset=UTF-8"})
+    @PreAuthorize("hasAnyAuthority('p1')")//拥有p1权限才可以访问
     public String r1(){
         return getUsername()+"访问资源r1";
     }
     @RequestMapping(value = "/r/r2",produces = {"text/plain;charset=UTF-8"})
+    @PreAuthorize("hasAnyAuthority('p2')")//拥有p2权限才可以访问
     public String r2(){
         return getUsername()+"访问资源r2";
     }

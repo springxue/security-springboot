@@ -1,13 +1,14 @@
 package com.casic.security.springboot.dao;
 
+import com.casic.security.springboot.model.PermissionDto;
 import com.casic.security.springboot.model.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class UserDao {
@@ -23,5 +24,18 @@ public class UserDao {
             return null;
         }
         return list.get(0);
+    }
+
+    //根据用户id查询用户权限
+    public List<String>findPermissionsByUserId(String userId){
+        String sql="SELECT * from t_permission where id in(\n" +
+                "\tselect permission_id from t_role_permission where role_id in(\n" +
+                "\t    select role_id from t_user_role where user_id=? \n" +
+                "\t)\n" +
+                ")";
+        List<PermissionDto> list = jdbcTemplate.query(sql, new Object[]{userId}, new BeanPropertyRowMapper<>(PermissionDto.class));
+        List<String> perssions=new ArrayList<>();
+        list.forEach(c -> perssions.add(c.getCode()));
+        return perssions;
     }
 }
